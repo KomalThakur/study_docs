@@ -1,0 +1,118 @@
+1. What is best to execute a script for every container initialization , and to execute a script for image build ?
+ENTRYPOINT - CFS initialization (Service)
+CMD - CFS,EFS and NFS (Shell) (Service)
+RUN - Image Build.  (Skeleton)
+
+2. Scenario - Pinging an IP , The count and the IP are flexible to change , How to approach it ?
+Entrypoint - cannot have variables. 
+from ubuntu:trusty
+count="-c"$variable
+ENTRYPOINT  ["/bin/ping"]
+CMD ["$count","localhost"']
+
+docker run --rm img 3 192.169.0000
+
+3. How many containers can be in a Docker machine, How many images can a docker-machine store ?
+
+containers - running containers occupy memory. unlimited.
+running ?  - 12% of 4X
+images - static ? - 80% of 4X (+volume)
+
+
+4. If there is a large Database like RDBMS, What kind of storage is recommended?
+
+Storage - Data for Storage for RDBMS - should be outside the container.
+If Container has data and Binary - It is monolothic.
+
+5. How do you take a decision of number of containers for a project - What aspects state the creation of container?
+
+container --> Services .
+number of Independent Services.  (Deployment, Definition, Scale)
+Aspects - SOA , 1 (Dependent Services), MSA - #  (Methodology Design Pattern)
+
+6. A Service running or restarting in a container - what is the state of container ?
+Service running - UP - 
+Service Restarting - ? COG
+
+7. An Active Running container creates a performance issue - As devops whats is best recommendation ?
+Follow COG
+
+8. What components of Dockerfile cannot be overriden by containers?
+Label, COPY, ADD , RUN
+
+9. What is difference between Network driver and Storage Driver ?
+Storage Driver  - Speed of retreiving data Read/Write Latency
+Network Driver - Scope of Container Communication. 
+ 		L1 L2 L3...
+		Within DM - bridge, DM-DM  overlay 
+		Between DH - MacVLAN
+
+11. How to restore a container in a new docker-machine
+ docker export and docker import 
+
+12. How to save an image in new docker-machine?
+Cloud - Push/Pull
+Save /Load - Preserving Layers
+
+10. How to restore a container in a new docker-machine ?
+ docker export and docker import 
+
+13. Which File system would you advise if the requirements are of hybrid type (both Block and File)
+BTRFS ,ZFS 
+
+14. Based on the choice of Standard input - the application may have to choose between cloud and local file retrieval, What is recommendation to Dockerfile? 
+ADD
+
+15. Scenario: A running containers environment have to be moved to another Docker Host Machine - How to approach it ?
+Batch Script of docker export
+
+16. Unusable port - What is it ?
+2376 2377 6162
+
+17. Why should we know a Image is multi-layered ? 
+For Deployment - docker export 
+Closed source or Open Source
+
+18. What is Interopoliation in Docker ?   
+{{json reading }}
+
+19. What are methods to access values in Docker - Whats your recommendation as Devops ?
+ `parse operator` , $variable , $(command) , {json} , {{interpoliation}}
+
+20. The ask is to copy files between two containers running in a docker machine , What is the next step forward?
+no copy between containers/.
+only via DH
+
+21. How many repositories can a docker-machine have ?
+1
+
+22. How many registries can a docker-machine have?
+registries are containers
+max 12% of 4x
+
+23. Ask is to create Log files - Of Chain 10 files for a Log application on producing Infra checks for every 5 seconds with assurance as Log service.
+blocking , non-blocking
+blocking : Log Memory =4M, New Logs always ?
+mode=non-blocking , cycle logs 
+--log-opt mode=non-blocking --log-opt maxfile=10  --log-opt size=10G
+
+24. Multiple Containers have to share common values. How do we approach this ?
+env-file --envfile
+
+25.How to check if a webservice is running in a container without entering the container? 
+top
+
+26. How to manage devices of host machine from container..
+--privileged 
+
+27. Scenario - The ask is to read the shell container processes from a specific time..
+docker logs --since=
+
+28.A ELK Logging Mechanism is available now at Production Site. Admin recommends to disable all logs for containers to be created to avoid duplicacy - How to create process instances with no logs ?
+docker run --log-driver=none
+
+29. Scenario - A container is effectively running and has to be considered as template. On templating we have to boot strap , how do we approach this problem?
+docker commit -c 
+30. On Q29 , On templating -  A message for data and time is to updated in image -  How do we approach this ?
+
+

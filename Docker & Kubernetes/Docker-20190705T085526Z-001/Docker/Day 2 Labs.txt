@@ -1,0 +1,234 @@
+Day 2 
+======
+
+DockerFile
+Copy on Write Strategy
+Environment Variables and Files
+
+36.
+Create in specific Format as per the ask
+docker ps -a --format "{{.ID}} {{.Image}}"
+docker ps -a --format "{{.ID}} {{.Image}} {{.Command}}"
+
+Get exact creation date of the Container
+docker inspect -f "{{ .Created }}" mybuntu
+
+docker inspect -f "{{.Created}} -- {{.HostConfig.CpuShares}} -- {{.State.Pid}} -- {{.NetworkSettings.IPAddress}}"  <<name of container>>
+
+37. 
+DockerFile Creation
+Step 1
+Create a Directory under the DockerToolBox - DCKEG1
+CD DCKEG1
+
+Step 2
+Notepad DockerFile
+
+ARG CODE_VERSION=latest
+FROM ubuntu:$CODE_VERSION
+MAINTAINER DHANANJAYAN
+ENV descpn="This is new version"
+RUN ["/bin/bash","-c","echo $descpn"]
+CMD echo $descpn |wc -c
+
+Step 3
+docker build -t myDockCnt -f Dockerfile.txt .
+Copy the Image created at last 
+(Note the layers being created)
+
+Step 4 
+docker ps -a
+docker image ls
+[Paste the Image ID or store the Image ID of docker image ls]
+
+Step 5
+docker run <<image id>> 
+
+38. Environment Variables
+==========================
+docker run -it -e client=ORA-DOM1  -e IP=$(docker-machine ip) ubuntu /bin/bash
+# echo $client
+# echo $IP
+
+39. Environment files
+=====================
+create envfile.txt
+client=ORA-DOM1
+Location=HYD
+
+docker run -it --env-file envfile.txt --name envcnteg ubuntu /bin/bash
+# echo $client 
+# echo $Location
+
+docker run -it --env-file envfile.txt -e uname=$(whoami) --name envcnteg1 ubuntu /bin/bash
+# echo $client
+# echo $location
+# echo $uname
+
+40. ENTRY POINT usage
+=========================
+docker run -it --entrypoint =/bin/ls ubuntu
+docker run -it --entrypoint =/bin/ls ubuntu -l /bin
+-- Did you observe - are you in shell ?
+
+
+
+41.
+Example on copy on Write Strategy
+
+Step 1
+=====
+Create a directory cow-new
+cd cow-new
+
+Step 2
+======
+cat > hello.sh
+#! /bin/sh
+echo "Hello from Shell from COWSTR"
+
+Save and close file.
+
+chmod +x hello.sh
+
+Step 3
+======
+--notepad Dockerfile.base
+
+FROM ubuntu:16.04
+COPY . /app
+
+Step 4
+======
+docker build -t acme/myimg1.0  -f Dockerfile.base .
+
+Step 5
+======
+notepad Dockerfile
+FROM acme/myimg1.0 
+RUN ["/bin/bash","-c", "echo from DCK Second Layer"]
+
+Step 6
+======
+docker build -t acme/mynewimg1.0 -f Dockerfile .
+
+Step 7
+=========
+notepad Dockerfile1
+FROM acme/mynewimg1.0
+CMD /app/hello.sh
+
+docker build -t acme/mynewimg2.0 -f Dockerfile1 . 
+
+docker ps -a 
+docker image ls
+docker history <<image id>>
+--inspect image and sizes
+
+
+
+Step 7
+======
+-- remove images
+
+47. ENTRY POINT in Docker file
+
+Step 1
+=====
+Create a directory - entpointeg
+cd entpointeg
+
+Step 2
+======
+--notepad Dockerfile
+FROM ubuntu:latest
+ENTRYPOINT ["top","-b"]
+CMD ["-c"]
+
+Step 3
+=====
+docker build -t newImg .
+docker run -it newImg 
+--(Observe the Output - Are you getting Process ID along with Threads) - How CMD and ENTRYPOINT acts together. 
+
+48.
+Step 1
+FROM ubuntu:trusty
+ENTRYPOINT ["/bin/ping","-c","3"]
+CMD ["localhost"]
+
+Step 2
+docker build -t demoping -f dockerfile .
+
+Step 3
+docker run --rm demoping 
+docker run --rm demoping $(docker-machine ip)
+
+49.
+ENV/ARG/ENVFILE
+
+Step 1
+
+FROM alpine
+ARG a_version=20
+RUN echo $a_version
+ENV a_version_new=$a_version
+
+Step 2
+docker build -t newimgone -f  Dockerfile.txt --build-arg a_version=34 .
+
+Step 3
+docker run -it --rm newimgone ash
+
+
+49.
+Optional only if you have knowledge of Java Applications.
+
+mkdir javaex
+cd javaex
+
+Step 1
+=======
+Notepad HelloWorld.java
+========================
+
+package javaex;
+public class HelloWorld 
+{
+public static void main (String[] args){
+System.out.println("Hello world :)");
+}
+}
+
+javac -d . HelloWorld.java
+
+Step 2
+=====
+When packaging the .jar file, you need to instruct the jar routine on how to pack it. Here we use the option set cvfeP. This is to keep the package structure (option P), specify the entry point so that the manifest file contains meaningful information (option e). 
+
+And then comes -C . <packagename>/ to get the class files from that folder, preserving the folder structure.
+
+jar cvfeP HelloWorld.jar javaex.HelloWorld -C . javaex/
+
+Step 3
+
+Test jar file
+java -jar HelloWorld.jar
+
+Step 4
+notepad Dockerfile
+
+FROM java:8
+WORKDIR /
+ADD HelloWorld.jar HelloWorld.jar
+EXPOSE 8080
+CMD java -jar HelloWorld.jar
+CMD ["/bin/bash","-c","echo this is from JVM"]
+
+
+Step 5
+docker build -t helloworldimg -f Dockerfile.txt .
+
+Step 6
+docker run -it helloworldimg bash
+

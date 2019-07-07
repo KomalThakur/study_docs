@@ -1,0 +1,231 @@
+1.
+kubectl version
+kubectl config use-context minikube
+
+2.
+
+kubectl get nodes 
+kubectl get pods -a --namespace=kube-system
+kubectl get services --namespace=kube-system
+
+3.
+user defined service
+==================
+### docker run -d --restart=always --name mynginx -p 80:80 -e D=Cluster nginx
+kubectl run dh-nginx --image=nginx --port=80
+kubectl get pods -a
+kubectl describe pod <<name of pod>>
+kubectl expose deployment dh-nginx --type=NodePort
+minikube.exe service dh-nginx
+minikube.exe service dh-nginx --url=true
+
+4.
+#docker ps -a
+kubectl get pods -a
+
+5.
+#docker exec -it
+kubectl exec -it [[Refer the name in pod --Step 8]]
+kubectl get deployment ..
+kubectl delete pods --all
+minikube status
+
+(Check status of LocalKube, Minikube)
+
+6.
+# Version of Kubernetes
+kubectl version
+kubectl proxy
+#127.0.0.1:8001
+kubectl proxy --port=8000
+#Open browser 
+http://localhost:8001/api/v1/namespaces/default/pods
+
+7.
+kubectl logs <<Find the Container name Get PodName >> 
+
+8.
+Replicating Server
+
+kubectl scale --replicas=3 deployment/dh-nginx 
+[[[Name of Container created in Kubectl Run]]]
+kubectl.exe get deployment
+kubectl get pods
+kubectl describe deployment/dh-nginx
+
+9.
+
+kubectl run hello-node --image=nginx --port=80
+kubectl get deployments
+kubectl expose deployment hello-node --type=LoadBalancer
+
+Step 7
+kubectl get services
+minikube.exe service hello-node
+minikube.exe service hello-node --url=true
+
+Step 8
+Open Browser, copy the URL in Step 7
+
+
+10..
+kubectl run hello-node-c1 --image=nginx --port=80
+kubectl expose deployment hello-node-c1 --type=ClusterIP
+minikube service hello-node-c1 /???
+kubectl get service (Note cluster IP)
+
+minikube ssh
+curl clusterIP:80 
+
+11.
+
+kubectl config view
+kubectl get nodes
+kubectl get pods
+kubectl get events
+kubectl get services
+kubectl get pods --namespace=kube-system
+
+12. Log file
+==============
+Step1
+======
+apiVersion: v1
+kind: Pod
+metadata:
+  name: command-demo
+  labels:
+    purpose: demonstrate-command
+spec:
+  containers:
+  - name: command-demo-container
+    image: ubuntu
+    command: ["printenv"]
+    args: ["HOSTNAME", "KUBERNETES_PORT"]
+  restartPolicy: OnFailure
+
+Step 2
+========
+kubectl create -f commandeg1.yaml
+
+Step 3
+=========
+kubectl get pods
+
+Step 4
+=====
+kubectl logs command-demo
+
+13.
+notepad pod-rc.yml
+===============
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: nginx
+spec:
+  replicas: 3
+  selector:
+    app: nginx
+  template:
+    metadata:
+      name: nginx
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+
+kubectl create -f pod-rc.yml
+kubectl get rc
+kubectl get pods -a
+kubectl describe rc/nginx
+kubectl get pods --selector=app=nginx
+
+14.
+two-container based management:
+===============================
+pod-cont.yaml
+=============
+apiVersion: v1
+kind: Pod
+metadata:
+  name: two-containers
+spec:
+  restartPolicy: Never
+  volumes:
+  - name: shared-data
+    emptyDir: {}
+
+  containers:
+
+  - name: nginx-container
+    image: nginx
+    volumeMounts:
+    - name: shared-data
+      mountPath: /usr/share/nginx/html
+
+  - name: debian-container
+    image: debian
+    volumeMounts:
+    - name: shared-data
+      mountPath: /pod-data
+    command: ["/bin/sh"]
+    args: ["-c", "echo Hello from the debian container > /pod-data/index.html"]
+
+kubectl create -f pod-cont.yaml
+
+kubectl get pod two-containers
+
+kubectl describe pod two-container
+kubectl replace --force -f pod-cont.yaml
+
+You can see that the debian Container has terminated, and the nginx Container is still running. (See ready state of both containers)
+
+Lets get into nginx running container
+
+kubectl exec -it two-containers -c nginx-container -- /bin/bash
+-c --> Default path
+
+#apt-get update
+#apt-get install curl procps
+#ps aux
+
+-- Do you see Parent Process and worker process
+
+# curl localhost
+(Do you see index.html being overwritten by Debian:)
+#exit
+
+kubectl logs two-containers nginx-container
+(container should be running)
+
+kuberctl get endpoints
+minikube dashboard
+
+
+15. Rolling update
+==============
+
+Step 1
+kubectl run rol-nginx --image=nginx --port=80
+Step 2
+kubectl expose deployment rol-nginx --type=NodePort
+Step 3
+kubectl get services
+Step 4
+minikube service rol-nginx
+Step 5
+kubectl set image deployments/rol-nginx rol-nginx=<<Your Docker Image>>
+Step 6
+kubectl rollout status deployments/rol-nginx
+kubectl get pod -a
+kubectl describe pods 
+minikube service rol-nginx
+Step 7
+kubectl rollout undo deployments/rol-nginx
+
+1

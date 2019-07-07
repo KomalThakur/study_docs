@@ -1,0 +1,112 @@
+1.Scenario : too many non-running containers - How to get rid of it ?
+Ans : docker rm $(docker ps -a -q) or docker container prune. Prune can be applied for images, network, registry and volume. Docker system prune , it doesnt do volume prune.
+
+2.When to create a container ? Difference between Container and Image ?
+Ans : for service realisation, testing an image, docker commit. 
+Container : Process, has a state, realises the services
+Image : Static, Code, Services
+
+3.How to create an Image in a Docker machine?
+docker commit - Container to image
+docker load -Tar to image
+
+4.when to use between Run , Pull and Exec options in Docker ?
+Run : QA( pull, create, start, attach)
+Pull : copy image from any repo
+Exec: LMR(log, monitor, report on running container)
+
+
+5.A new feature of docker is now enabled, How to determine whether your
+docker can use the beta features ?
+EXPERIMENTAL : true, config.jsomn on docker machine.
+6.scenario - Code team has asked you to assign 3 ports for their services. As a Devops - What is your recommendation ?
+Restricted Ports for Docker 
+2376 - dockerd
+2377 - SWAARM
+6162 - Notary runs nginx
+7.A Docker machine can talk to another Docker machine - Can it ? If yes , how ?
+SWARM - overrlay.
+8.Docker Containers are persistent - Agree?
+agree
+
+9.Docker Containers - Can the same image be stored in different Containers - If yes ,  what is the state of the image in Dockers , if there an option to state persistence?
+Containers are persistent, images are local to container cz they are hard linked
+
+10.How to identify the log of the container ?
+docker gives 4 logs - 
+application logs - CI, logs
+kernel logs - CD, logPath
+images log -  diff
+event logs - events
+
+11.Without Docker ps-a , is there an option to determine whether a container is in UP state
+docker inspect -f 
+
+12.When Pulling the Image from HUB Docker - What is the First protocol Docker server checks?
+Notary 6162
+
+13.Is each Docker-machine a VM ? 
+DM is a VM + Dockerd
+
+14.Can docker machine be associated with vairous docker drivers like hyperv, virtualbox?
+1 machine = 1 driver, you cant change the driver of DM
+
+15.Hypervisor - is Docker a replacement for Hypervisor ? why ?
+docker : kernel virtualization, light wt ps
+Hypervisor : Hardware storage, sharing resources of Physical devices
+
+16.Is Docker a Freeware? any Licensing to be taken care ?
+Open source, Docker SDK requires license.
+
+17.The Docker engine seems to have taken more IO Block memory - How to validate this ?
+docker stats
+
+
+18.Dockers and VM - Do they co-exist ?
+They coexist in OCI
+
+19.Images are encrypted as ________- and encrypted in _________.
+Layers, SHA256
+three things you cant change for docker  : YAML, JSON, SHA256
+
+20.Can an Image be overwritten in Docker ? 
+yes
+
+21. Which objects does not have IPs in Docker ?
+Images, volume, repo
+
+22. What is default log driver of container ? 
+depends of VM Driver, default : json-file
+
+23. How to determine the size of the container?
+docker ps -s
+
+24. To delete all containers in a single step ?
+docker rm -f $(docker ps -a -q)
+
+25. The ask is to host AWS containers in docker machine - How to approach this need?
+rancherVM - converting VM to DIS - 75% efficient
+
+26. OCI - What is it ?  
+Open Container Initiative(Docker, Amazon, Google, Microsoft, Vagrat, Oracle)
+
+27. Scenario , For every 5 seconds, Infrastructure of devices have to be checked within the current Docker environment - How can we deliver this ?
+
+28. Scenario , For a Log file update - We require date and time to be logged in for every 2 seconds to monitor heart beat. What is the best approach ?
+
+29. A Rollout is expected for 1000 containers from Image R1 to R2. Is it possible to change the image of an existing container ? 
+no, skeleton image is read only
+
+30. How to trace event log of dockerd ?
+docker events, sys/fs
+
+docker run -d --name logsfordf ubuntu /bin/bash -c "while true;
+do sleep 5; date;df -h; done"
+
+
+
+
+
+
+
+

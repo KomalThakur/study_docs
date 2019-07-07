@@ -1,0 +1,78 @@
+1. What is default storage driver for Docker ?
+   
+2. By default - all containers are accessible in a docker-machine, How to limit containers from communication?
+
+3. As Devops - whats is your choice if the ask is to have a  volume ?
+
+4. If a Container has volumes with -v , can a container be deleted ?
+
+5. The business need is to have one primary container to broadcast fellow data through RW Privelege.Limited to a single host for testing purposes. Whats your recommendation to implement. 
+
+6. In Q5 , The Business need has changed beyond the primary host machine. How do we deliver this ?
+
+7. Some data seems to be corrupted in volume when retriving information from the container. How do you approach this issue?
+
+8. Can one alter storage driver of running container ?
+
+9. A Docker container has some unwanted tasks currently running. The ask is to investigate   dependencies and ascertain action - Whats your recommendation?
+
+10.A Docker-machine has limited infrastructure requirements. Whats best way to ensure data is retained?
+
+
+11.If one needs to ensure the Image properties have to be retained in image, 
+   whats your recommendation? 
+
+12.Multiple Containers have to share common values. How do we approach this ?
+
+13. Are Dynamic Ports Consistent(range) ?
+
+14. A container performance is in question.. What are steps DevOps should look into ?
+
+15.One of observations noted was the DM hasnt allocated enough memory to run a container - Do you have recommendations from Docker or is this beyond Docker?
+
+16.when to inspect a bridge container ?
+
+17.Ask is to provide volume related information for containers in a DM - Your best recommendation ?
+
+18.C1 - is a Database container with data as volume. The image for C1 is DB V1. The database has been upgraded by Application. How can we upgrade the container?
+
+19.ask is to preserve some environment settings in the base image(s) for container. What is your recommendation?
+
+
+20. The ask is to shutdown the docker-machine after a recent Hack incident.  The ask is to abort all operations in the machine. Whats your recommendation?
+
+
+21 .You have images with status as image name as none in docker image ls , what does it infer to and next steps?
+
+22.  A docker-machine shows cache of 10% capacity of docker-machine. What are your next steps ?
+
+23. How to determine Container healthy ?
+
+24. One of the containers would require a communication other than TCP, Is it possible in docker ?
+
+25. How to determine the dependency of images?
+
+26. Scenario - How to monitor containers..?
+
+27. Volumes created within a docker-engine , Is this machine dependent, If 
+
+28. How to limit changes to a container?
+
+
+docker run --volume=/:/rootfs:ro --volume=/var/run:/var/run:rw --volume=/sys:/sys:ro --volume=/var/lib/docker/:/var/lib/docker:ro --publish=8080:8080  --detach=true --name=cadvisor google/cadvisor:latest
+
+docker run --rm -ti \
+  --name=ctop \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  quay.io/vektorlab/ctop:latest
+
+docker run -it --pid=host jess/htop
+
+
+
+
+
+
+
+
+

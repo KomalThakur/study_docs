@@ -1,0 +1,462 @@
+Scope
+=====
+Docker networks Bridges
+Docker Compose nginx and mysql 
+Docker Compose redis and mysql
+Overriding Docker compose
+Simple Swarm
+Swarm and Compose
+
+
+
+1. Networking
+docker network ls
+docker inspect bridge (Look for options, Config ,Subnet, Gateway)
+
+2. User Defined Bridge
+
+Step 1
+======
+docker network create --driver bridge alpnetbridge
+
+Step 2
+=======
+docker network ls
+
+Step 3
+======
+docker network inspect alpnetbridge
+
+Step 4
+======
+docker network inspect bridge
+
+Step 5
+========
+docker run -dit --name alpnet1 --network alpnetbridge alpine ash
+docker run -dit --name alpnet2 --network alpnetbridge alpine ash
+docker run -dit --name alpnet3 --network alpnetbridge alpine ash
+docker run -dit --name alpnet4 --network alpnetbridge alpine ash
+
+Step 6
+=======
+docker network inspect alpnetbridge 
+
+Step 7
+=======
+docker exec -it alpnet1  ash
+# ping -c2 alpnet2
+# ping -c2 alpnet3
+# ping -c2 alpnet4
+# ip addr show  (Remember the IP address of alpnet1)
+# exit
+
+Step 8
+======
+docker exec -it alpnet3 ash
+# ping <IP address of alpnet1>
+# exit
+
+
+Step 9
+======
+Remove containers, Network and Bridges
+
+3.
+
+Step 1
+========
+Create User Defined Network
+docker network create --subnet 172.28.0.0/20 --ip-range 172.28.5.0/24 --driver bridge netblrhyd
+
+(For Overlay Bridge, you need Swarm Network)
+
+Step 2
+=======
+Connect the Container to Network ---> devtestread container (Any existing Up container)
+docker network connect netblrhyd devtestread
+
+Step 3
+=======
+Inspect your Container and Network Object - What do you see in them?
+docker inspect netblrhyd
+(What is Container IP - Is this in line with subnet and IP RANGE)
+
+docker inspect devtestread
+Observe Containers - Do you see Networks ?
+Observe Networks -- Do you see Containers?
+
+Step 4
+======
+docker run -it --name myalp2 alpine ash
+docker network connect netblrhyd myalp2
+
+docker inspect netblrbyd 
+(Did it get add) ? 
+
+docker inspect myalp2
+(did it get added)
+
+Step 5
+=======
+
+docker network disconnect netblrhyd myalp2
+docker start myalp2
+docker network connect netblrhyd myalp2
+
+Step 6
+docker run -d -it --name mynetbash -w /usr ubuntu bash
+docker network connect netblrhyd mynetbash
+
+Step 7
+docker inspect -f "{{ range .Containers}} {{.Name}} {{.IPv4Address}}{{end}}"  netblrhyd
+
+4.
+How to assign a static IP 
+docker network create --subnet=172.18.0.0/16 mynet123
+docker run --net mynet123 --ip 172.18.0.22 -it ubuntu bash
+
+5.
+docker-compose with nginx and mysql
+Step 1
+======
+create directory new-comp
+move into directory new-comp
+
+step 2
+docker-compose.yml
+=================
+version: '3'
+services:
+  databases:
+    image: mysql
+    ports:
+    - "3306:3306"
+    environment:
+    - MYSQL_ROOT_PASSWORD=admin
+    - MYSQL_USER=user
+    - MYSQL_PASSWORD=password
+    - MYSQL_DATABASE=demodb
+  web:
+     image: nginx
+   
+step 3
+======
+docker-compose up
+Let the docker daemon be running
+
+step 4
+=======
+Open up another Docker terminal
+docker ps -a
+Refer the database running - Note the container name.
+
+Step 5
+=======
+docker exec -it newdckcomp_databases_1 bash
+#mysql -u root - p
+(admin is the password entered in the compose file)
+# show databases;
+# use demodb;
+# show tables;
+# exit;
+
+Step 6
+docker-compose down
+docker-compose rm
+
+6.
+Simple docker-compose with redis and postgre
+=============================================
+Step 1:
+=======
+Create a directory new-comp1 
+Move into directory new-comp1
+
+Step 2
+
+docker-compose.yml
+==================
+version: '3'
+services:
+  web:
+    image: nginx
+    depends_on:
+      - db
+      - redis
+  redis:
+    image: redis
+  db:
+    image: postgres
+
+Step 2:
+docker-compose up
+Let the Daemon process be running
+Step 3
+Open up a new Docker Terminal... 
+
+Docker ps- a
+### execute the redis container into the shell with docker exec -it 
+# redis-server
+# redis-cli
+# ping 
+# CONFIG GET *
+# exit
+# exit
+
+Step3
+docker-compose down
+docker-compose rm
+
+7. Overriding docker-compose
+==============================
+Step 1
+==========
+New Directory new-comp2
+
+Step 2
+========
+docker-compose.yml
+web:
+  image: nginx
+  links:
+    - db
+    - cache
+db:
+  image: postgres
+cache:
+  image: redis
+
+docker-compose up -d 
+
+(See creation of the Containers...)
+
+Step 3
+docker-compose.override.yml
+=========================
+web:
+  volumes:
+    - ".:/code"
+  ports:
+    - "8883:80"
+  environment:
+    DEBUG: "true"
+
+db:
+  ports:
+    - "5432:5432"
+cache:
+  ports:
+    - "6379:6379"
+
+### ImportantBefore running docker-compose 
+docker-compose down
+####- ensure the corresponding containers are stopped and pruned.
+docker-compose rm
+Step 4
+=======
+docker-compose up -d 
+
+Step 5
+=======
+Check for ports in docker ps -a 
+docker port <<name of container>>
+Enter into docker exec -it of web shell and check for echo $DEBUG
+
+docker-compose.prod.yml
+========================
+web:
+  ports:
+    - 80:80
+  environment:
+    PRODUCTION: "true"
+cache:
+  environment:
+    TTL: "500"
+
+Step 6
+========
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+
+Step 7
+=======
+execute into container of shell and check for $PRODUCTION
+
+Step 8
+=======
+docker-compose down
+docker-compose rm
+
+docker-machine inspect default
+docker-machine env default
+
+
+8.Swarm example
+=====================
+Step 1
+========
+docker-machine ls
+
+Step 2
+=======
+docker-machine create -d virtualbox --virtualbox-cpu-count=2 --virtualbox-memory=4096 --virtualbox-disk-size=50000 defa
+ult
+docker-machine create --driver virtualbox myv1
+docker-machine create --driver virtualbox myv2
+
+Step 3
+=========
+docker-machine ls 
+(check for existence state of Docker machine)
+Note the IPs 
+
+Step 4
+=======
+#Swarm initialization
+
+docker-machine ssh myv1 "docker swarm init --advertise-addr <<docker-machine Master IP>>"
+Once initialized - Note down the Token Number generated by the system. 
+
+Step 5
+=======
+docker-machine ssh mymach1 "docker swarm join-token worker"
+docker-machine env mymach1
+# note the last line of the Env and run the last line in prompt)
+docker-machine ls 
+(Note the active machine status)
+docker node ls
+
+Step 6
+=========
+docker-machine ssh myv2 "docker swarm join --token {{tokenid from Step 4}}"
+docker node ls
+
+In case if you have forgotten the token 
+docker-machine ssh myv1 "docker swarm join-token worker"
+
+Step 7
+========
+docker-machine env myv1
+Look for last line (Run command to configure your shell and execute the line)
+
+Step 9 
+=========
+docker-machine ls
+Once run, the current machine (VM) will be running machine
+docker network ls
+Do you see Swarm status ?
+
+Step 10
+========
+# is performance coming down - then shift to default machine
+docker-machine env default
+run the last line..
+docker-machine ls
+
+Step 11
+=========
+Create a directory newnet-comp
+
+Create docker-compose.yml
+===========================
+version: '3'
+services:
+  redis:
+    image: redis:alpine
+    deploy:
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: "50M"
+        reservations:
+          cpus: "0.25"
+          memory: "20M"
+      mode: replicated
+      replicas: 6
+
+
+Step 11
+========
+#Prior deployment , you need to ensure you are in Leader machine 
+docker-machine env mymach1
+(run the last command)
+docker stack deploy -c docker-compose.yml mydckswarmimg
+
+Step 12
+========
+docker ps -a 
+(Do you see any ?)
+
+docker stack ps mydckswarmimg
+To access these containers - you can visit the containers by docker exec -it and check for usage.
+
+Step 13
+=======
+#Now , Lets shut down one machine down and see how distribution happen
+
+docker-machine ssh myv "docker swarm leave --force"
+
+docker stack ps mydckswarmimg
+# Refer the column of current state and 
+# Do you see error description saying no image in Redis .. The recommendation is to have the image in each of the docker-machine so that it can run. Just pull the respective images in the docker-machine.
+
+docker-machine ssh mymach2 "docker swarm leave --force"
+
+Step 14
+=========
+
+docker stack rm mydckswarmimg
+docker stack ls
+docker network prune
+
+docker-machine env default
+
+9. Content Trust
+export DOCKER_CONTENT_TRUST=1
+docker login -u 
+Dockerfile
+=========
+FROM ubuntu
+RUN echo
+CMD echo "Trust build"
+
+
+docker build -t newimg -f dockerfile.txt  .
+docker run newimg
+docker run --disable-content-trust newimg
+
+export DOCKER_CONTENT_TRUST=0
+docker run newimg
+
+10.
+Notepad dockerfile1
+===============
+FROM oraclelinux:6 as build1
+COPY a.sh /usr/app/
+
+FROM java:8
+COPY --from=build1 /usr/app/ /app/
+CMD sh /app/a.sh
+
+docker build -t newimg -f dockerfile1 .
+docker run newimg
+
+https://kubernetes.io/docs/tasks/tools/install-kubectl/
+https://github.com/kubernetes/minikube/releases
+https://storage.googleapis.com/kubernetes-release/release/v1.10.0/bin/windows/amd64/kubectl.exe
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

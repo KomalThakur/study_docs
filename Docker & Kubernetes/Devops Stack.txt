@@ -1,0 +1,49 @@
+
+3 Roles  
+=======
+Devops Operations (DO), 
+Devops Administration (DA), 
+Devops Automation (Da)
+
+DO:
+Infra Monitoring tools - Nagios*, Icinga,Splunk
+CM Tools - Monit, Ansible, Chef*, Puppet*
+Log Tools - LogSlash, ELK*, SumoLogic, Scalyr, Graylog
+Task Monitor - Jenkins, JIRA*
+Container Orch - Vagrant, Docker*,rkt
+Gather Statistics Tools - Collectl/collectd/mcollect*
+Repository - GITB*,BITB,Artefactory
+Build mgmt tools - Gradle*, Maven, Ant
+Packet Logging - Snort, Cisconl
+
+DA:
+Discovery Tools - Consul.IO
+Automation CI/CD - Bamboo, Chef
+Orchestration - Kubernetes*,MaesoSphere,CloudVagrant, Docker Swarm
+Error Monitoring and Reporting Platform - Raygun, Pagerduty*, Overops
+Issue Reporting - JIRA*
+Service Monitoring - Prometheus
+Cluster Grid - Ganglia
+Security Management - Snort
+Intelligent Software Arch - SALT Stack
+IT Automation - CFEngine
+Deployment Automation - Juju*, Capistano
+Process Management - Supervisord
+Code management - Code Climate
+AM Tools - Relic AM
+Auditing - Rudder
+
+Da:
+HELM
+Data Automation - Upguard
+AI Automation - Python, YAML, R , CNI,Shell Scripting* 
+Code management - Code Climate
+
++++++
+Middleware
+Database - NOSQL , MYSQL 
+Linux
+Cloud Service Automation
+
+
+

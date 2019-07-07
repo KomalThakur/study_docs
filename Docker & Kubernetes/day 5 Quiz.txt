@@ -1,0 +1,55 @@
+Day 4
+=====
+
+
+1. Docker-machine -- Do they reuse IP ?
+
+2. Volumes created within a docker-engine , Is this machine dependent, If yes - how one should share the volume?
+
+3. Can we host a windows container in docker tool box - Say a Nano Server or ASP.NET?
+
+4.What is your recommendation for Multi container management ,with central control?
+
+5.A new feature has come up in Docker newer version - Can we test and use them in Docker - Any guidelines we should follow to incorporate?
+
+6.Once docker-machines are connected in a network - What is driver used ? 
+
+7.Docker-machines - Are all Docker-machines in Linux ?
+
+8.A Docker-machine's performance is in question. 
+As Devops - How do you manage it ?
+
+9.Scenario :100 Docker-machines are in swarm, The dependency of the master is in question to match up to performance expectations, what is your call in ?
+
+10.Two services are connected to each other logically however they are independent as containers. In future application development you see them progressive. How can this be demonstrated ?
+
+11. In Q10 - We change this to direct Dependency, the REDIS server will pull up key values from a WebServer which will host up the network. How do you implement this ?
+
+12. Singleton Design Pattern - Can we implement this in Docker ?
+
+13. The default handshake between Docker machines - Can this be overriden - Where is it stored in , Will this differ based on machine
+
+14. On what grounds do we decide it is a different Docker-machine? (Design guideline?)
+
+SSO - Storage Driver, State of machine, Sensitivity
+15. A Security plugin like Calico for Network security is released. Can Docker enable this ? 
+
+DIS?
+16. can one simulate docker environment (Docker Daemon) outside scope of Docker-Terminal?
+
+Docker SDK
+17. Can multiple Dockerfiles exist for a container?
+
+18. Can multiple "docker-compose" file exist - If yes, can we control the flow of docker-compose file?
+
+19. can compose files be written in any other language other than YAML ? 
+
+20. How do we make Docker containers portable?
+
+21. How to ensure a docker machine is never updated ?
+
+22. How to limit changes to a container?
+
+24. For an image - ask is to create 3 new users - How to approach this problem?
+
+25. From Design Perspective , what are considerations when implementing Docker in your project?

@@ -1,0 +1,113 @@
+1.Name the command which removes all stopped containers?
+2.Difference between Container and Image ?
+3.How to create an Image in Docker ?
+4.when to use between Run , Pull and Exec options in Docker ?
+5.How to determine the server and client OS of docker-machine?
+6.What is default port of docker URL ?
+7.A Docker machine can talk to another Docker machine through ________ by ________.
+8.Docker Containers are persistent - Agree?
+9.Docker Containers - Can the same image be stored in different Containers - If yes , 
+ what is the state of the image in Dockers , if there an option to state persistence?
+10.How to identify the log of the container ?
+11.Without Docker ps-a , is there an option to determine whether a container is in UP state 
+12.When Pulling the Image from HUB Docker - What is the First protocol Docker server checks
+13.Is each Docker-machine a VM ? 
+14.Can docker machine be associated with vairous docker drivers like hyperv, virtualbox?
+15.Hypervisor - is Docker a replacement for Hypervisor ?
+16.Is Docker a Freeware?
+17.What is command to measure utilization of the Docker engine ?
+18.Dockers and VM - Do they co-exist ?
+19.container ID - What is length of Container ID ?
+20.Can an Image be overwritten in Docker ? 
+21. Which objects have IPs in Docker ?
+22. What is default log driver of container ?
+23. How to determine the size of the container?
+24. To delete all containers in a single step ?
+25. OCI - What is it ? 
+
+Day 2
+
+1. What is best to execute a script for every container initialization ?
+2. In case of Image Build for question 1?
+3. How many containers can be in a Docker machine, How many images can a docker-machine store ?
+4. If there is a large Database like RDBMS, What kind of storage is recommended?
+5. How do you take a decision of number of containers for a project - What aspects state the creation of container?
+6. A Service running or restarting in a container - what is the state of container status 
+7. An Active Running container creates a performance issue - As devops whats is best recommendation ?
+8. Audit log is required to inspect activities of Docker container - Whats your recommendation?
+9. What is difference between Network driver and Storage Driver ?
+11. How to restore a container in a new docker-machine 
+12. How to save an image in new docker-machine?
+13. Which File system would you advise if the requirements are of hybrid type (both Block and File)
+14. Based on the choice of Standard input - the application may have to choose between cloud and local file retrieval, What is recommendation to Dockerfile?
+15.  Are dynamic ports consistent across OS ?
+16. Unusable port - What is it ?
+17. How do we know a Image is multi-layered ?
+18. What is Introspection in Docker ? 
+19. What are methods to access values in Docker - Whats your recommendation as Devops ?
+20. The ask is to copy files between two containers running in a docker machine , What is the next step forward?
+21. How many repositories can a docker-machine have ?
+22. How many registries can a docker-machine have?
+
+Day 3
+=====
+
+1. What is default log for docker ?
+2. By default - all containers are accessible in a docker-machine, How to limit containers from communication?
+3. As Devops - whats is your choice if the ask is to have a docker volume ?
+4. If a Container has volumes with -v , can a container be deleted ?
+5. The business need is to have one primary container to broadcast fellow data through 
+RW Privelege.Limited to a single host for testing purposes. Whats your recommendation to implement. 
+6. In Q5 , The Business need has changed beyond the primary host machine. How do we deliver this ?
+7. Some data seems to be corrupted when retriving information from the container. The Container 
+   however has a volume associated , How do you approach this issue?
+8. Network Driver , Storage Driver -- whats the difference?
+9. A Docker container has some unwanted tasks currently running. The ask is to investigate 
+   dependencies and ascertain action - Whats your recommendation?
+10.How many containers can be in a Network bridge ?
+11.If a gateway IP is not within scope of the definition of Gateway , How does Docker recognize this ?
+12.A Docker-machine has limited infrastructure requirements. Whats best way to ensure data is retained?
+13.If one needs to ensure the instance of Image properties have to be retained, 
+   whats your recommendation? 
+14.Multiple Containers have to share common values. How do we approach this ?
+15.After containers have been built - it is perceived that they have to be clustered- whats your 
+   recommendation, How do we achieve this ?
+16.How to check if a webservice is running in a container without entering the container?
+17.One of observations noted was the OS is taking up lot of storage to run a container
+   - Do you have recommendations from Docker or is this beyond Docker?
+18.when to inspect a bridge container ?
+19.Ask is to provide volume related information for containers in a DM - Your best recommendation ?
+20.C1 - is a Database container with data as volume. The image for C1 is DB V1. The database has been upgraded by Application. How can we upgrade the container?
+21.ask is to preserve some environment settings in the base image(s) for container. What is your recommendation?
+22. The ask is to shutdown the docker-machine after a recent Hack incident.  The ask is to abort all operations in the machine. Whats your recommendation?
+23 .You have images with status as image name as none in docker images ls , what does it infer to and next steps?
+24.  A docker-machine shows cache of 10% capacity of docker-machine. What are your next steps ?
+
+Day 4
+=====
+
+1. Docker-machine -- Do they reuse IP ?
+2. Volumes created within a docker-engine , Is this machine dependent, If yes - how one should share the volume?
+3. Can we host a windows container in docker tool box - Say a Nano Server or ASP.NET?
+4.What is your recommendation for Multi container management ,with central control?
+5.A new feature has come up in Docker newer version - Can we test and use them in Docker - Any guidelines we should follow to incorporate?
+6.Once docker-machines are connected in a network - What is driver used ? 
+7.Docker-machines - Are all Docker-machines in Linux ?
+8.A Docker-machine's performance is in question. 
+As Devops - How do you manage it ?
+9.Scenario :100 Docker-machines are in swarm, The dependency of the master is in question to match up to performance expectations, what is your call in ?
+10.Two services are connected to each other logically however they are independent as containers. In future application development you see them progressive. How can this be demonstrated ?
+11. In Q10 - We change this to direct Dependency, the REDIS server will pull up key values from a WebServer which will host up the network. How do you implement this ?
+12. Singleton Design Pattern - Can we implement this in Docker ?
+13. The default handshake between Docker machines - Can this be overriden - Where is it stored in , Will this differ based on machine
+14. On what grounds do we decide it is a different Docker-machine? (Design guideline?)
+15. A Security plugin like Calico for Network security is released. Can Docker enable this ? 
+16. can one simulate docker environment (Docker Daemon) outside scope of Docker-Terminal?
+17. Can multiple Dockerfiles exist for a container?
+18. Can multiple "docker-compose" file exist - If yes, can we control the flow of docker-compose file?
+19. can compose files be written in any other language other than YAML ? 
+20. How do we make Docker containers portable?
+21. How to ensure a docker machine is never updated ?
+22. How to limit changes to a container?
+24. For an image - ask is to create 3 new users - How to approach this problem?
+25. From Design Perspective , what are considerations when implementing Docker in your project?

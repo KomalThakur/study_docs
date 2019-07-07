@@ -1,0 +1,27 @@
+1) sudo apt update
+2) sudo apt upgrade
+3) sudo apt install curl
+4) sudo apt install git
+5) python2.7 --version // sudo apt install python-minimal
+
+-----docker install-------
+6) sudo apt update
+7) sudo apt install apt-transport-https ca-certificates gnupg-agent software-properties-common
+8) curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+9) sudo add-apt-repository "deb [arch=amd64]
+https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+10) sudo apt update
+11)sudo apt install -y docker-ce
+12) sudo usermod -aG docker <YourUserNameGoesHere>
+-----docker install finish------
+-----docker compose install-------
+13) sudo curl -L
+https://github.com/docker/compose/releases/download/1.18.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+14)sudo chmod +x /usr/local/bin/docker-compose
+15) sudo reboot now
+-----docker compose install finish-------
+-----fabric install-------
+16) cd ~/Desktop
+17) curl -sSL https://raw.githubusercontent.com/hyperledger/fabric/master/scripts/bootstrap.sh | bash -s 1.4.0
+18) ls
+19) cd fabric-samples && ls

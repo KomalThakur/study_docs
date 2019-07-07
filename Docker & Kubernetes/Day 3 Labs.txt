@@ -1,0 +1,334 @@
+Scope
+====
+
+
+1.Volumes
+  42. Master Slave Binding
+  43. Volume Binding (OS)
+  44. Volume Binding NodeJS 
+  45. Duplex Binding
+  46. ReadOnly Binding
+
+2.Ports
+  47. Ports
+  48. More Docker Commands
+  49. Registry Creation
+  
+3.Networking
+  49. Networking Configuration
+  50. Network Creation - Bridges
+  51. UDF Networks
+
+More commands to play
+===================
+1.Network Settings 
+docker inspect -f "{{.NetworkSettings.IPAddress}}" myoraclelinux
+docker ps -q | xargs docker inspect -f "{{.NetworkSettings.IPAddress}}"
+docker inspect -f '{{.NetworkSettings.IPAddress}} --> {{.Name}}' $(docker ps -q)
+
+2. Tar save /Load
+docker commit myoraclelinux myoraimg
+docker save -o a.tar myoraimg
+
+docker rmi myoraimg
+docker load < a.tar
+docker run -it --rm myoraimg bash
+
+3. Export /Import
+docker export -o a1.tar  myoraclelinux
+cat a1.tar | docker import - mynewcont
+(refer what is mynewcont) ?
+(can you try importing a saved file?)
+
+4. Docker pause
+
+docker run -dit --name myoracle oraclelinux:6
+docker pause myoracle
+--check for docker ps -a
+docker inspect myoracle (what is the Status of State, Paused :true)
+ docker exec -it myoracle bash 
+???
+docker unpause myoracle
+docker inspect myoracle (what is the Status of State, Paused :true)
+ docker exec -it myoracle bash 
+
+7. Registry
+
+Step 1 
+docker run -d -p 5000:5000 --restart=always --name registry registry:2
+--Port 5000, Name of registry , Always active for Connection, Newer Image of Registry
+
+Step 2
+--Pull latest image
+docker pull ubuntu
+--Confirm creation
+docker image ls
+
+Step 3
+--Push ubuntu into registry
+docker tag ubuntu localhost:5000/ubuntu:tag2ubuntu2registry
+---(Tags should be in lowercase , so are repositories)
+docker push localhost:5000/ubuntu:tag2ubuntu2registry
+
+Step 4
+--Lets Remove Image from Local Disk
+docker image remove ubuntu
+docker image remove localhost:5000/ubuntu/tag2ubuntu2registry
+
+Step 5
+docker pull localhost:5000/ubuntu:tag2ubuntu2registry
+-- The Local Registry (UDF) still serves your DML Softwares across your distribution.
+
+docker inspect registry
+The Restart policy , STate and Args created are different.
+
+
+Stop and remove registry
+docker container stop registry
+docker rm -v registry
+
+--Image of registry still exist - Force removal is required to remove 
+
+8. Volumes
+Master-Slave Binding
+
+Step 1
+=======
+docker volume ls
+
+Step 2
+=======
+docker run -it --name master-data -v backup:/backup ubuntu /bin/bash
+--As it is --it , Interactive terminal , Shell of ubuntu should be enabled, check for backup directory created 
+--by docker
+# cd /backup
+# cat > newfile
+  This is backup file for test purpose.
+# exit
+
+Step 3
+docker volume ls 
+--Note backup volume 
+docker inspect backup
+
+Step 4
+=========
+
+docker run -it --name slave1 --volumes-from master-data ubuntu /bin/bash
+# ls /backup
+# cat /backup/newfile
+
+--Volumes are mounted from master-data container into new container. This is volume container binding.
+--tmpfs is limited to RHL binding, no source container, data is moved from tmp
+
+Step 5
+=======
+--remove the volume
+--remove container.
+
+11
+
+Step1
+=====
+ docker run --name mynginx1 -d -v ~/nginxlogs:/var/log/nginx -p 5001:80 nginx
+
+Step2
+====
+ Check for docker ps -a
+ Open browser http://192.168.99.100:5001
+
+visit the nginxlogs directory in c/users/<<user>> 
+what does it contain?
+
+docker-machine ssh default
+sudo -i
+iptables -L 
+iptables -L --line-numbers
+iptables -t nat -L --line-numbers
+
+Step 3
+=======
+ docker stop mynginx1
+ docker rm mynginx1
+
+12. Volumes 2
+Volume Binding with OS
+
+Step 1
+======
+create directory data in c:/users/<<your user directory/data
+create sample.txt in data directory with messages.
+
+Step 2
+======
+docker run -dit --name devmtest1 -v ~/data:/app fedora bash
+# ls /app
+
+-- refer files created in data directory available in app directory. This is binding container without volume.
+
+13.
+Implementation with NodeJs
+
+Step 1
+=======
+docker search -s5000 node
+(check for Image name official)
+
+Step 2
+=======
+docker pull node 
+
+Step 3
+=======
+cat >sample.js
+console.log("Sample Node Js file");
+
+Step 4
+========
+create folder in windows --> c:/user/<user directory>/nodex...(Copy sample.js here)
+docker run -it --name mynode -v ~/nodex:/usr/src/app -w /usr/src/app node bash
+#node Sample.js
+(Note the PWD, and Execution of node Sample.js)
+
+docker rm mynode
+
+Step 5
+=====
+docker run -it --rm --name mynode -v ~/nodex:/usr/src/app -w /usr/src/app node node Sample.js
+
+
+14.
+Mount Volume binding
+(Duplex)
+
+Step 1
+=======
+docker run -d -it --name devtest --mount type=bind,source=/c/Users/Dhananjayan/nodex,target=/app 
+ubuntu bash
+
+Step 2
+======
+docker exec -it devtest bash
+#visit directory
+docker inspect devtest (Refer Mounts Section)
+
+Step 3
+=======
+Open another terminal, Visit Nodex directory - Keep changing the sourcedirectory See
+Are you seeing the changes in bash as you reflect changes
+
+Step 4
+=======
+Visit the bash of container - Create Directories from Files in container 
+Do you reflect the changes in the directory of powershell ?
+
+What is bind type in JSON , Can we look for a command ?
+docker inspect -f "{{range  .Mounts}} {{.Type}}{{end}}" devtest
+Now expand, to name and created date of the container ?
+docker inspect -f "{{.Name}}{{.Created}}{{range .Mounts}} {{.Type}} {{end}}" devtest
+
+Step 5
+=======
+
+
+Exit , Remove Containers
+
+15.
+Readonly Mounts
+
+Step 1
+======
+ docker run -d -it --name devtestread --mount 
+type=bind,source=/c/Users/Dhananjayan/nodex,target=/app,readonly ubuntu
+
+Step 2
+=======
+ docker exec -it devtestread bash
+ # cd app
+ # mkdir newfiletestreaddir
+ (What happens ??? )
+ exit
+Step 3
+Remove containers.
+
+Readonly Containers with volumes:
+
+docker run -it --name myubun --read-only -v backup:/backup ubuntu bash
+docker run -it --name myubun -v backup:/backup:ro ubuntu bash
+
+16. Ports
+Step 1
+docker run -t -d --name webserver -p 80:80 ubuntu 
+
+Step 2
+docker port webserver
+docker ps -a
+
+Step 3
+docker exec -it webserver /bin/bash
+
+Step 4
+#apt-get update
+#apt-get install apache2 vim
+
+Step 5
+# cd /etc/apache2
+# cat sites-enabled/000-default.conf 
+-- Look for document root in the file The path should be /var/www/lib --> index.html
+
+Step 6
+rm index.html
+cat > index.html
+<h1> This is your webserver running from Docker </h1>
+
+Step 7
+service apache2 restart
+exit
+
+Step 8
+docker ps -a
+-- check for webserver container status
+docker start webserver
+
+Step 9
+docker-machine ip
+docker port webserver
+curl $(docker-machine ip)
+Browser --> Open http://<ip> :80
+
+Step 10
+docker stop webserver
+remove all containers
+
+17.
+Step 1
+======
+docker top <<Container ID>>
+Provides PID of Running container
+
+Step 2
+======
+Open a new shell (Powershell)
+docker events 
+(Run time status of events)
+
+Step 3
+======
+From Docker terminal
+Provide Docker start commands
+What happens in real time status of events ?
+
+Step 4
+======
+Update Configuration of Container at Runtime
+
+docker inspect -f " {{ .HostConfig.KernelMemory}} {{.HostConfig.CpuShares}}" nodesample
+docker update --cpu-shares 256 --kernel-memory 200M nodesample
+docker inspect -f " {{ .HostConfig.KernelMemory}} {{.HostConfig.CpuShares}}" nodesample
+
+
+22.
+echo one two three | xargs mkdir
+echo one two three | xargs -t rmdir
+docker ps -a -q | xargs docker container inspect -f '{{ .Name }} {{ range .Mounts}} {{ .Type}} {{ .Name}} {{end}}'
+

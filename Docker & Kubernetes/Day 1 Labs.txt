@@ -1,0 +1,134 @@
+Docker Installation:
+-- Please Check BIOS Setup or in Task Manager Performance to see Virtualization Enabled.
+-- Ensure One Browser is Enabled.
+-- Create A Docker Hub Account (Free Account) - Login and Password (Sign up)
+-- GIT Hub Account (Optional)
+-- Install Docker ToolBox Legacy https://docs.docker.com/toolbox/overview/#whats-in-the-box
+----- Check for Kitematic, Docker Quick Start Terminal , Oracle VM Created.
+
+Labs:1 
+Docker CLI (Docker Client CLI)
+Run command option in Docker - Pulls the container and then runs the application.
+
+1. docker search hello-world
+ Search hello-world image 
+
+2. docker run hello-world
+
+Docker pulls the image locally and checks pulls it from DockerHub , creates and image and check for existence.
+Lets see the following:
+3.Docker container ls
+(Any Containers crated) ?
+
+4.Docker image ls
+What do you see Images - Image ID , Name of Image (?) , Image Tag, Repository and Image Size
+
+5.Docker ps -a
+Look for status . Ports and Command 
+
+6.Docker ps -l
+What is difference between 4 and 5.
+
+7.Docker search ubuntu
+Search for ubuntu image in Docker 
+
+8.docker search -s 1000 ubuntu
+Search for higher stars rating to get the right image 
+
+9.docker search --no-trunc -s 1000 ubuntu
+Truncated wihout content.
+
+10. docker search --no-trunc --limit 10 ubuntu
+Searches for first 10 searches for ubuntu
+
+11. docker run --name myubun ubuntu /bin/bash
+Lets Execute the image Ubuntu in our system. 
+ 
+12.  docker run -it ubuntu /bin/bash
+Check for Process status after exiting root.
+
+13.
+docker run -dit --name ubun1 ubuntu /bin/bash 
+docker exec -it myubun /bin/bash 
+Execute commands in the Container myubun, To First execute , you should see the container in the "Up"
+
+14. Check for a running container
+docker ps -a (check for status) or docker container ls
+docker start container_id 
+docker exec myubun ls
+(Are you in shell yet ?)
+To ensure you are in container - use -it 
+docker exec -it myubun bash
+
+15.To check for client and Server version
+docker version
+
+16. Get list of Images
+docker image ls
+(Look for Tag and Size)
+
+17. To Access an image , you need a container.
+Docker inspect <image id>
+Docker container myubun
+what are differences you see between the JSONS ?
+
+18.docker info
+Get Info on docker
+
+19.docker stats
+Get Real time statistics Information on docker 
+
+20.docker rmi <image id>
+To remove an image from Docker
+
+21. docker container prune
+This command removes all stopped containers.
+
+22. docker network ls
+This provides list of networks availabile within container. Default Network Drive is bridge.
+
+23. docker run -dit --name mycont alpine sh
+This pulls Alpine environment 
+-d : run a dameon thread (check with docker ps -a)
+
+24. docker exec -it myalp sh
+Opens the shell environment as alpine environment
+
+25. docker exec myalp ifconfig
+Checks the IP address of the container.
+
+26. First Remember your credentials in DockerHub
+docker login -u <<username>>
+-- provide your password , Login will succeed.
+
+Now lets push Hello-world container into your DockerHub.
+Find the image ID of hello-world in Docker image ls
+docker tag <<image ID>> <<dockerhubusername>>/hello-world:<<Your comment>>
+docker tag ffjjjjjjj dnarasim248/hello-world:FirstPush2DockerDJ
+docker push <<dockerhubusername>>/hello-world
+
+27. docker rmi -f <imageid>
+Remove the image. (Force removal -f)
+
+28. List of VM boxes running
+docker-machine ls
+
+29. docker-machine url
+30.docker-machine status
+
+31. docker-machine ip
+
+32.docker-machine ls 
+list the machines listed along with new machine created in Line 32.
+
+33.Pull the Posted Image in your Login Hubber
+docker pull <<yourhubuser>>/hello-world:<<your tag name>>
+docker pull dnarasim248/hello-world:FirstEntry
+ 
+34. Confirm images created
+docker image ls
+
+35. Create a container with pulled hello-world
+docker run -it --name mycont <<Image ID of docker image ls>>
+docker ps-a | grep mycont (check for container created with name=mycont)
+
